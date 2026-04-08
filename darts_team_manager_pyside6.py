@@ -340,24 +340,24 @@ class DB:
 
 DARK_QSS = """
 QMainWindow {
-    background-color: #181926;
-    color: #CDD6F4;
+    background-color: #1a1d2b;
+    color: #D0D4E0;
     font-family: "Segoe UI", "Ubuntu", sans-serif;
     font-size: 13px;
 }
 QWidget {
-    color: #CDD6F4;
+    color: #D0D4E0;
     font-family: "Segoe UI", "Ubuntu", sans-serif;
     font-size: 13px;
 }
 QTabWidget::pane {
-    border: 1px solid rgba(100, 110, 140, 0.4);
+    border: 1px solid rgba(120, 125, 145, 60);
     border-radius: 8px;
-    background-color: rgba(36, 39, 58, 180);
+    background-color: rgba(40, 44, 56, 120);
 }
 QTabBar::tab {
-    background-color: rgba(54, 56, 72, 200);
-    color: #CDD6F4;
+    background-color: rgba(55, 60, 75, 180);
+    color: #D0D4E0;
     padding: 8px 20px;
     margin-right: 2px;
     border-top-left-radius: 8px;
@@ -366,14 +366,14 @@ QTabBar::tab {
     font-weight: bold;
 }
 QTabBar::tab:selected {
-    background-color: rgba(73, 77, 100, 220);
+    background-color: rgba(70, 76, 95, 200);
     color: #FFFFFF;
 }
 QTabBar::tab:hover {
-    background-color: rgba(68, 70, 96, 210);
+    background-color: rgba(65, 70, 90, 190);
 }
 QFrame, QGroupBox {
-    background-color: rgba(43, 45, 58, 180);
+    background-color: rgba(45, 50, 65, 120);
     border-radius: 8px;
 }
 QGroupBox {
@@ -390,9 +390,9 @@ QLabel {
     border: none;
 }
 QLineEdit {
-    background-color: rgba(54, 56, 72, 200);
-    color: #CDD6F4;
-    border: 2px solid #7882A4;
+    background-color: rgba(50, 55, 70, 180);
+    color: #D0D4E0;
+    border: 2px solid #7B84A0;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 13px;
@@ -403,8 +403,8 @@ QLineEdit:focus {
     border: 2px solid #61AFEF;
 }
 QPushButton {
-    background-color: rgba(73, 77, 100, 210);
-    color: #CDD6F4;
+    background-color: rgba(65, 72, 90, 190);
+    color: #D0D4E0;
     border: none;
     border-radius: 8px;
     padding: 6px 16px;
@@ -412,20 +412,20 @@ QPushButton {
     font-weight: bold;
 }
 QPushButton:hover {
-    background-color: rgba(91, 95, 119, 220);
+    background-color: rgba(80, 88, 110, 210);
 }
 QPushButton:pressed {
     background-color: #61AFEF;
     color: #000000;
 }
 QPushButton:disabled {
-    background-color: rgba(54, 56, 72, 160);
+    background-color: rgba(50, 55, 70, 140);
     color: #555555;
 }
 QComboBox {
-    background-color: rgba(54, 56, 72, 200);
-    color: #CDD6F4;
-    border: 2px solid #7882A4;
+    background-color: rgba(50, 55, 70, 180);
+    color: #D0D4E0;
+    border: 2px solid #7B84A0;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 13px;
@@ -435,11 +435,11 @@ QComboBox::drop-down {
     width: 20px;
 }
 QComboBox QAbstractItemView {
-    background-color: rgba(54, 56, 72, 240);
-    color: #CDD6F4;
+    background-color: rgba(50, 55, 70, 230);
+    color: #D0D4E0;
     selection-background-color: #61AFEF;
     selection-color: #000000;
-    border: 1px solid #7882A4;
+    border: 1px solid #7B84A0;
 }
 QCheckBox {
     background-color: transparent;
@@ -449,20 +449,20 @@ QCheckBox {
 QCheckBox::indicator {
     width: 18px;
     height: 18px;
-    border: 2px solid #7882A4;
+    border: 2px solid #7B84A0;
     border-radius: 4px;
-    background-color: rgba(54, 56, 72, 200);
+    background-color: rgba(50, 55, 70, 180);
 }
 QCheckBox::indicator:checked {
     background-color: #61AFEF;
     border-color: #61AFEF;
 }
 QTreeWidget {
-    background-color: rgba(43, 45, 58, 190);
-    color: #CDD6F4;
+    background-color: rgba(40, 44, 58, 150);
+    color: #D0D4E0;
     border: none;
     font-size: 12px;
-    alternate-background-color: rgba(48, 51, 71, 190);
+    alternate-background-color: rgba(48, 52, 68, 150);
 }
 QTreeWidget::item {
     padding: 4px;
@@ -473,11 +473,11 @@ QTreeWidget::item:selected {
     color: #000000;
 }
 QTreeWidget::item:hover {
-    background-color: rgba(54, 56, 72, 180);
+    background-color: rgba(55, 60, 75, 150);
 }
 QHeaderView::section {
-    background-color: rgba(54, 56, 72, 210);
-    color: #CDD6F4;
+    background-color: rgba(50, 55, 70, 180);
+    color: #D0D4E0;
     padding: 6px;
     border: none;
     font-weight: bold;
@@ -488,12 +488,12 @@ QScrollArea {
     border: none;
 }
 QScrollBar:vertical {
-    background-color: rgba(43, 45, 58, 150);
+    background-color: rgba(40, 44, 58, 100);
     width: 10px;
     border-radius: 5px;
 }
 QScrollBar::handle:vertical {
-    background-color: rgba(73, 77, 100, 200);
+    background-color: rgba(70, 76, 95, 180);
     border-radius: 5px;
     min-height: 30px;
 }
@@ -504,12 +504,12 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
     height: 0px;
 }
 QScrollBar:horizontal {
-    background-color: rgba(43, 45, 58, 150);
+    background-color: rgba(40, 44, 58, 100);
     height: 10px;
     border-radius: 5px;
 }
 QScrollBar::handle:horizontal {
-    background-color: rgba(73, 77, 100, 200);
+    background-color: rgba(70, 76, 95, 180);
     border-radius: 5px;
     min-width: 30px;
 }
@@ -520,11 +520,11 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
     width: 0px;
 }
 QSplitter::handle {
-    background-color: rgba(73, 77, 100, 180);
+    background-color: rgba(70, 76, 95, 140);
     width: 2px;
 }
 QDialog {
-    background-color: rgba(36, 39, 58, 240);
+    background-color: rgba(35, 40, 52, 230);
 }
 """
 
@@ -633,13 +633,13 @@ class _BgWidget(QWidget):
     def paintEvent(self, event):
         p = QPainter(self)
         # Dark base fill
-        p.fillRect(self.rect(), QColor("#181926"))
+        p.fillRect(self.rect(), QColor("#1a1d2b"))
         if self._bg and not self._bg.isNull():
             scaled = self._bg.scaled(
                 self.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
             x = (self.width() - scaled.width()) // 2
             y = (self.height() - scaled.height()) // 2
-            p.setOpacity(0.35)
+            p.setOpacity(0.45)
             p.drawPixmap(x, y, scaled)
             p.setOpacity(1.0)
         p.end()
@@ -1053,7 +1053,7 @@ class App(QMainWindow):
                 self.team_members[ti] = []
 
             col = QFrame()
-            col.setStyleSheet(f"QFrame {{ background-color: #2B2D3A; border-radius: 8px; }}")
+            col.setStyleSheet(f"QFrame {{ background-color: rgba(45, 50, 65, 120); border-radius: 8px; }}")
             col_layout = QVBoxLayout(col)
             col_layout.setContentsMargins(8, 8, 8, 8)
 
@@ -1145,16 +1145,14 @@ class App(QMainWindow):
         participants = [item.data(0, Qt.UserRole) for item in sel]
         random.shuffle(participants)
 
-        for ti in self.team_members:
-            self.team_members[ti] = []
-
+        cnt = len(self.team_vars)
         for i, pid in enumerate(participants):
-            team_idx = i % len(self.team_vars)
+            team_idx = i % cnt
             self.team_members.setdefault(team_idx, []).append(pid)
 
         self._rebuild_team_lists()
         QMessageBox.information(self, "Рандомайзер",
-                                f"Успешно распределено {len(participants)} участников по командам!")
+                                f"Успешно распределено {len(participants)} участников по {cnt} командам!")
 
     # ═══════════════════════════════════════════════════════════════════════
     #  Вкладка «Матч»
@@ -1180,7 +1178,7 @@ class App(QMainWindow):
         self.save_btn.setStyleSheet(
             "QPushButton { background-color: #98C379; color: #000000; font-size: 14px; font-weight: bold; }"
             "QPushButton:hover { background-color: #7BA862; }"
-            "QPushButton:disabled { background-color: #363848; color: #555555; }")
+            "QPushButton:disabled { background-color: rgba(50, 55, 70, 140); color: #555555; }")
         self.save_btn.setEnabled(False)
         self.save_btn.clicked.connect(self._manual_save)
         top_layout.addWidget(self.save_btn)
@@ -1195,7 +1193,7 @@ class App(QMainWindow):
 
         # Scoreboard
         self.scoreboard = QFrame()
-        self.scoreboard.setStyleSheet("QFrame { background-color: rgba(30, 32, 48, 200); border-radius: 8px; }")
+        self.scoreboard.setStyleSheet("QFrame { background-color: rgba(40, 45, 60, 140); border-radius: 8px; }")
         self.scoreboard_layout = QHBoxLayout(self.scoreboard)
         self.scoreboard_layout.setContentsMargins(12, 6, 12, 6)
         layout.addWidget(self.scoreboard)
@@ -1276,7 +1274,7 @@ class App(QMainWindow):
             title_lbl = QLabel(ROW_TITLES[row_idx])
             title_lbl.setAlignment(Qt.AlignCenter)
             title_lbl.setStyleSheet(
-                "background-color: rgba(255, 107, 53, 210); color: #000000; font-size: 15px; "
+                "background-color: rgba(70, 80, 105, 180); color: #D0D4E0; font-size: 15px; "
                 "font-weight: bold; border-radius: 8px; padding: 6px 12px;")
             self.m_scroll_layout.addWidget(title_lbl)
 
@@ -1305,7 +1303,7 @@ class App(QMainWindow):
     # ─── Создание одного раунда ───────────────────────────────────────────
 
     def _make_round(self, parent_layout, rno, label, code, teams, game_idx=0):
-        chess_colors = ["rgba(58, 61, 74, 180)", "rgba(69, 72, 87, 180)"]
+        chess_colors = ["rgba(45, 50, 65, 100)", "rgba(52, 57, 72, 100)"]
         bg_color = chess_colors[game_idx % 2]
 
         # Outer: horizontal layout (main game | tiebreak)
@@ -1562,7 +1560,7 @@ class App(QMainWindow):
 
     def _build_one_sector_box(self, parent_layout, game_no, teams):
         box = QFrame()
-        box.setStyleSheet("QFrame { background-color: rgba(43, 45, 58, 180); border-radius: 10px; }")
+        box.setStyleSheet("QFrame { background-color: rgba(45, 50, 65, 100); border-radius: 10px; }")
         box_layout = QVBoxLayout(box)
         box_layout.setContentsMargins(16, 10, 16, 10)
 
@@ -1593,7 +1591,7 @@ class App(QMainWindow):
         for team in teams:
             ti = team["idx"]
             tf = QFrame()
-            tf.setStyleSheet("QFrame { background-color: rgba(54, 56, 72, 180); border-radius: 8px; }")
+            tf.setStyleSheet("QFrame { background-color: rgba(50, 55, 70, 100); border-radius: 8px; }")
             tf_layout = QVBoxLayout(tf)
             tf_layout.setContentsMargins(10, 8, 10, 8)
 
@@ -2231,7 +2229,7 @@ class App(QMainWindow):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         content = QWidget()
-        content.setStyleSheet("background-color: rgba(36, 39, 58, 230);")
+        content.setStyleSheet("background-color: rgba(35, 40, 52, 200);")
         cl = QVBoxLayout(content)
         cl.setContentsMargins(12, 12, 12, 12)
 
@@ -2253,7 +2251,7 @@ class App(QMainWindow):
 
         for rnd in p.get("rounds", []):
             rf = QFrame()
-            rf.setStyleSheet("QFrame { background-color: rgba(43, 45, 58, 200); border-radius: 8px; }")
+            rf.setStyleSheet("QFrame { background-color: rgba(45, 50, 65, 160); border-radius: 8px; }")
             rf_layout = QVBoxLayout(rf)
             rf_layout.setContentsMargins(10, 6, 10, 6)
 
@@ -2309,7 +2307,7 @@ class App(QMainWindow):
                 if sd is None:
                     continue
                 sf = QFrame()
-                sf.setStyleSheet("QFrame { background-color: rgba(43, 45, 58, 200); border-radius: 8px; }")
+                sf.setStyleSheet("QFrame { background-color: rgba(45, 50, 65, 160); border-radius: 8px; }")
                 sf_layout = QVBoxLayout(sf)
                 sf_layout.setContentsMargins(10, 6, 10, 6)
 
@@ -2407,9 +2405,9 @@ class App(QMainWindow):
         min_vals = [h["avg_min"] for h in history]
         bull_vals = [h["avg_bull"] for h in history]
 
-        fig = Figure(figsize=(10, 6), facecolor="#2B2D3A")
+        fig = Figure(figsize=(10, 6), facecolor="#2D3241")
         ax = fig.add_subplot(111)
-        ax.set_facecolor("#2B2D3A")
+        ax.set_facecolor("#2D3241")
 
         if any(v is not None for v in max_vals):
             ax.plot(match_nums,
@@ -2438,7 +2436,7 @@ class App(QMainWindow):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-        ax.legend(loc='upper right', facecolor='#363848',
+        ax.legend(loc='upper right', facecolor='#323746',
                   edgecolor='#CDD6F4', labelcolor='#CDD6F4')
         ax.grid(True, alpha=0.3, color='#CDD6F4')
 
