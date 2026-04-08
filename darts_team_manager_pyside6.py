@@ -553,6 +553,24 @@ class ColorButton(QPushButton):
             self.colorChanged.emit(self._color)
 
 
+class NumericTreeWidgetItem(QTreeWidgetItem):
+    """QTreeWidgetItem с числовой сортировкой по UserRole данным."""
+    def __lt__(self, other):
+        col = self.treeWidget().sortColumn() if self.treeWidget() else 0
+        v1 = self.data(col, Qt.UserRole)
+        v2 = other.data(col, Qt.UserRole)
+        if v1 is None:
+            v1 = 9999
+        if v2 is None:
+            v2 = 9999
+        if isinstance(v1, str) and isinstance(v2, str):
+            return v1.lower() < v2.lower()
+        try:
+            return float(v1) < float(v2)
+        except (ValueError, TypeError):
+            return str(v1) < str(v2)
+
+
 class ScoreEntry(QLineEdit):
     """Поле ввода очков с поддержкой выражений и навигации."""
     def __init__(self, width=60, parent=None):
@@ -1981,12 +1999,11 @@ class App(QMainWindow):
         self.st_tree.setAlternatingRowColors(True)
         self.st_tree.setRootIsDecorated(False)
         self.st_tree.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.st_tree.setSortingEnabled(False)
+        self.st_tree.setSortingEnabled(True)
         # Column widths
         widths = [130, 60, 80, 50, 80, 50, 80, 50, 80, 60]
         for i, w in enumerate(widths):
             self.st_tree.setColumnWidth(i, w)
-        self.st_tree.header().sectionClicked.connect(self._on_stats_header_click)
         self.st_tree.itemDoubleClicked.connect(self._show_player_graph)
 
         st_layout.addWidget(self.st_tree)
@@ -2060,39 +2077,41 @@ class App(QMainWindow):
         hi_layout.addWidget(self.hi_tree)
         layout.addWidget(hi_frame, 1)
 
-    def _on_stats_header_click(self, index):
-        """Sort by 'Общий' column (index 9)."""
-        if index == 9:
-            self._sort_by_overall()
-
-    def _sort_by_overall(self):
-        self.st_tree.clear()
-        stats = self.db.calc_stats()
-        sorted_stats = sorted(stats, key=lambda x: x.get("overall") or 99999)
-        for r in sorted_stats:
-            item = QTreeWidgetItem([
-                r["name"], str(r["n"]),
-                fmt(r["avg_max"]), fmt(r["r_max"]),
-                fmt(r["avg_min"]), fmt(r["r_min"]),
-                fmt(r["avg_bull"]), fmt(r["r_bull"]),
-                fmt(r["avg_p"]), fmt(r["overall"]),
-            ])
-            self.st_tree.addTopLevelItem(item)
+    def _make_stats_item(self, r):
+        """Create a NumericTreeWidgetItem with proper numeric sort data."""
+        item = NumericTreeWidgetItem([
+            r["name"], str(r["n"]),
+            fmt(r["avg_max"]), fmt(r["r_max"]),
+            fmt(r["avg_min"]), fmt(r["r_min"]),
+            fmt(r["avg_bull"]), fmt(r["r_bull"]),
+            fmt(r["avg_p"]), fmt(r["overall"]),
+        ])
+        # Store numeric values in UserRole for correct sorting
+        sort_vals = [
+            r["name"],                                    # 0: Имя (str)
+            r["n"],                                       # 1: Матчей
+            r["avg_max"] if r["avg_max"] is not None else -1e9,  # 2: Ср. макс
+            r["r_max"] if r["r_max"] is not None else 9999,      # 3: Ранг макс
+            r["avg_min"] if r["avg_min"] is not None else 1e9,   # 4: Ср. мин
+            r["r_min"] if r["r_min"] is not None else 9999,      # 5: Ранг мин
+            r["avg_bull"] if r["avg_bull"] is not None else -1e9, # 6: Ср. бул
+            r["r_bull"] if r["r_bull"] is not None else 9999,    # 7: Ранг бул
+            r["avg_p"] if r["avg_p"] is not None else 9999,      # 8: Ср. место
+            r["overall"] if r["overall"] is not None else 9999,  # 9: Общий
+        ]
+        for col, val in enumerate(sort_vals):
+            item.setData(col, Qt.UserRole, val)
+        return item
 
     # ─── Обновление статистики и истории ──────────────────────────────────
 
     def _refresh_history(self):
         # Stats
+        self.st_tree.setSortingEnabled(False)
         self.st_tree.clear()
         for r in self.db.calc_stats():
-            item = QTreeWidgetItem([
-                r["name"], str(r["n"]),
-                fmt(r["avg_max"]), fmt(r["r_max"]),
-                fmt(r["avg_min"]), fmt(r["r_min"]),
-                fmt(r["avg_bull"]), fmt(r["r_bull"]),
-                fmt(r["avg_p"]), fmt(r["overall"]),
-            ])
-            self.st_tree.addTopLevelItem(item)
+            self.st_tree.addTopLevelItem(self._make_stats_item(r))
+        self.st_tree.setSortingEnabled(True)
 
         # History
         self.hi_tree.clear()
