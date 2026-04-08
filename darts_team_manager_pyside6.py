@@ -750,6 +750,8 @@ class App(QMainWindow):
 
         self.tabs = QTabWidget()
         self.tabs.setDocumentMode(True)
+        self.tabs.tabBar().setExpanding(False)
+        self.tabs.setStyleSheet("QTabWidget::tab-bar { alignment: center; }")
         main_layout.addWidget(self.tabs)
 
         self.tab_people = QWidget()
@@ -799,11 +801,6 @@ class App(QMainWindow):
         cfg_top.addStretch()
 
         cfg_layout.addLayout(cfg_top)
-
-        # Team name/color row
-        self.cfg_host_layout = QHBoxLayout()
-        cfg_layout.addLayout(self.cfg_host_layout)
-        self._rebuild_cfg_row()
 
         layout.addWidget(cfg_frame)
 
@@ -863,17 +860,17 @@ class App(QMainWindow):
         bar_layout.addSpacing(12)
 
         btn_add = QPushButton("Добавить")
-        btn_add.setFixedWidth(100)
+        btn_add.setFixedWidth(120)
         btn_add.clicked.connect(self._add_person)
         bar_layout.addWidget(btn_add)
 
         btn_rename = QPushButton("Переименовать")
-        btn_rename.setFixedWidth(130)
+        btn_rename.setFixedWidth(150)
         btn_rename.clicked.connect(self._rename_person)
         bar_layout.addWidget(btn_rename)
 
         btn_del = QPushButton("Удалить участника")
-        btn_del.setFixedWidth(150)
+        btn_del.setFixedWidth(170)
         btn_del.setStyleSheet("QPushButton { background-color: #E06C75; } QPushButton:hover { background-color: #C85A63; }")
         btn_del.clicked.connect(self._del_person)
         bar_layout.addWidget(btn_del)
@@ -885,18 +882,18 @@ class App(QMainWindow):
         bar_layout.addWidget(sep)
 
         btn_remove = QPushButton("Убрать из команды")
-        btn_remove.setFixedWidth(150)
+        btn_remove.setFixedWidth(200)
         btn_remove.clicked.connect(self._remove_from_team)
         bar_layout.addWidget(btn_remove)
 
         btn_random = QPushButton("Рандомное распределение")
-        btn_random.setFixedWidth(200)
+        btn_random.setFixedWidth(250)
         btn_random.setStyleSheet("QPushButton { background-color: #E5C07B; color: #000000; } QPushButton:hover { background-color: #C9A63A; }")
         btn_random.clicked.connect(self._randomize_teams)
         bar_layout.addWidget(btn_random)
 
         btn_clear = QPushButton("Очистить все команды")
-        btn_clear.setFixedWidth(180)
+        btn_clear.setFixedWidth(200)
         btn_clear.setStyleSheet("QPushButton { background-color: #E06C75; } QPushButton:hover { background-color: #C85A63; }")
         btn_clear.clicked.connect(self._clear_teams)
         bar_layout.addWidget(btn_clear)
@@ -905,35 +902,10 @@ class App(QMainWindow):
         layout.addWidget(bar)
 
     def _rebuild_cfg_row(self):
-        # Clear existing widgets
-        while self.cfg_host_layout.count():
-            item = self.cfg_host_layout.takeAt(0)
-            w = item.widget()
-            if w:
-                w.deleteLater()
-            elif item.layout():
-                self._clear_layout(item.layout())
-
+        # team_vars are now built inside _rebuild_team_lists
+        # This method just rebuilds the vars list from team_cfg
         self.team_vars = []
-        for i, t in enumerate(self.team_cfg["teams"]):
-            f = QHBoxLayout()
-            f.addWidget(QLabel(f"Команда {i+1}:"))
-            ne = QLineEdit(t["name"])
-            ne.setFixedWidth(130)
-            ne.textChanged.connect(lambda _: self._vars_to_cfg())
-            f.addWidget(ne)
-            cb = ColorButton(t["color"])
-            cb.colorChanged.connect(lambda _: self._vars_to_cfg())
-            f.addWidget(cb)
-
-            container = QWidget()
-            container.setLayout(f)
-            container.setStyleSheet("background-color: transparent;")
-            self.cfg_host_layout.addWidget(container)
-
-            self.team_vars.append({"name_edit": ne, "color_btn": cb})
-
-        self.cfg_host_layout.addStretch()
+        # Will be populated in _rebuild_team_lists
 
     def _on_count_change(self, text):
         try:
@@ -959,7 +931,6 @@ class App(QMainWindow):
 
         self.team_cfg = {"count": cnt, "teams": teams}
         self.db.save_state("team_cfg", self.team_cfg)
-        self._rebuild_cfg_row()
         self._rebuild_team_lists()
 
     def _on_save_teams_toggled(self, checked):
@@ -1046,21 +1017,36 @@ class App(QMainWindow):
     def _rebuild_team_lists(self):
         self._clear_layout(self.teams_host_layout)
         self.team_trees = {}
-        cnt = len(self.team_vars)
+        self.team_vars = []
+        cnt = self.team_cfg["count"]
+        teams_list = self.team_cfg["teams"]
 
         for ti in range(cnt):
             if ti not in self.team_members:
                 self.team_members[ti] = []
+
+            t = teams_list[ti] if ti < len(teams_list) else {"name": f"Команда {ti+1}", "color": PALETTE[ti % len(PALETTE)]}
 
             col = QFrame()
             col.setStyleSheet(f"QFrame {{ background-color: rgba(45, 50, 65, 120); border-radius: 8px; }}")
             col_layout = QVBoxLayout(col)
             col_layout.setContentsMargins(8, 8, 8, 8)
 
-            # Header
-            hdr = QLabel(self.team_name(ti))
-            hdr.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {self.team_color(ti)};")
-            col_layout.addWidget(hdr)
+            # Team name edit + color button above roster
+            cfg_row = QHBoxLayout()
+            ne = QLineEdit(t["name"])
+            ne.setFixedWidth(140)
+            ne.setStyleSheet(f"font-size: 14px; font-weight: bold;")
+            ne.textChanged.connect(lambda _: self._vars_to_cfg())
+            cfg_row.addWidget(ne)
+
+            cb = ColorButton(t["color"])
+            cb.colorChanged.connect(lambda _: self._vars_to_cfg())
+            cfg_row.addWidget(cb)
+            cfg_row.addStretch()
+            col_layout.addLayout(cfg_row)
+
+            self.team_vars.append({"name_edit": ne, "color_btn": cb})
 
             # Tree
             tree = QTreeWidget()
@@ -1168,7 +1154,7 @@ class App(QMainWindow):
         top_layout.setContentsMargins(12, 8, 12, 8)
 
         btn_new = QPushButton("Новый матч")
-        btn_new.setFixedWidth(130)
+        btn_new.setFixedWidth(150)
         btn_new.setStyleSheet("QPushButton { font-size: 14px; font-weight: bold; }")
         btn_new.clicked.connect(self._new_match)
         top_layout.addWidget(btn_new)
@@ -2090,7 +2076,7 @@ class App(QMainWindow):
         hi_top.addWidget(btn_show)
 
         btn_del = QPushButton("Удалить выбранные")
-        btn_del.setFixedWidth(160)
+        btn_del.setFixedWidth(180)
         btn_del.setStyleSheet("QPushButton { background-color: #E06C75; } QPushButton:hover { background-color: #C85A63; }")
         btn_del.clicked.connect(self._delete_matches)
         hi_top.addWidget(btn_del)
