@@ -34,7 +34,7 @@ from PySide6.QtWidgets import (
     QAbstractItemView, QSizePolicy, QSpacerItem, QGroupBox
 )
 from PySide6.QtCore import Qt, QTimer, Signal, QSize
-from PySide6.QtGui import QColor, QFont, QIcon, QKeySequence, QShortcut
+from PySide6.QtGui import QColor, QFont, QIcon, QKeySequence, QShortcut, QPixmap, QPalette, QBrush, QPainter
 
 try:
     import matplotlib
@@ -69,6 +69,9 @@ ROW_COLORS = ["#98C379", "#E5C07B", "#C678DD"]
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                        "calculation.db")
+
+BG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                       "bg_dartboard.png")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  Утилиты
@@ -336,19 +339,24 @@ class DB:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 DARK_QSS = """
-QMainWindow, QWidget {
-    background-color: #24273A;
+QMainWindow {
+    background-color: #181926;
+    color: #CDD6F4;
+    font-family: "Segoe UI", "Ubuntu", sans-serif;
+    font-size: 13px;
+}
+QWidget {
     color: #CDD6F4;
     font-family: "Segoe UI", "Ubuntu", sans-serif;
     font-size: 13px;
 }
 QTabWidget::pane {
-    border: 1px solid #363848;
+    border: 1px solid rgba(100, 110, 140, 0.4);
     border-radius: 8px;
-    background-color: #24273A;
+    background-color: rgba(36, 39, 58, 180);
 }
 QTabBar::tab {
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 200);
     color: #CDD6F4;
     padding: 8px 20px;
     margin-right: 2px;
@@ -358,14 +366,14 @@ QTabBar::tab {
     font-weight: bold;
 }
 QTabBar::tab:selected {
-    background-color: #494D64;
+    background-color: rgba(73, 77, 100, 220);
     color: #FFFFFF;
 }
 QTabBar::tab:hover {
-    background-color: #444660;
+    background-color: rgba(68, 70, 96, 210);
 }
 QFrame, QGroupBox {
-    background-color: #2B2D3A;
+    background-color: rgba(43, 45, 58, 180);
     border-radius: 8px;
 }
 QGroupBox {
@@ -382,9 +390,9 @@ QLabel {
     border: none;
 }
 QLineEdit {
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 200);
     color: #CDD6F4;
-    border: 1px solid #494D64;
+    border: 2px solid #7882A4;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 13px;
@@ -392,10 +400,10 @@ QLineEdit {
     selection-color: #000000;
 }
 QLineEdit:focus {
-    border: 1px solid #61AFEF;
+    border: 2px solid #61AFEF;
 }
 QPushButton {
-    background-color: #494D64;
+    background-color: rgba(73, 77, 100, 210);
     color: #CDD6F4;
     border: none;
     border-radius: 8px;
@@ -404,20 +412,20 @@ QPushButton {
     font-weight: bold;
 }
 QPushButton:hover {
-    background-color: #5B5F77;
+    background-color: rgba(91, 95, 119, 220);
 }
 QPushButton:pressed {
     background-color: #61AFEF;
     color: #000000;
 }
 QPushButton:disabled {
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 160);
     color: #555555;
 }
 QComboBox {
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 200);
     color: #CDD6F4;
-    border: 1px solid #494D64;
+    border: 2px solid #7882A4;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 13px;
@@ -427,11 +435,11 @@ QComboBox::drop-down {
     width: 20px;
 }
 QComboBox QAbstractItemView {
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 240);
     color: #CDD6F4;
     selection-background-color: #61AFEF;
     selection-color: #000000;
-    border: 1px solid #494D64;
+    border: 1px solid #7882A4;
 }
 QCheckBox {
     background-color: transparent;
@@ -441,20 +449,20 @@ QCheckBox {
 QCheckBox::indicator {
     width: 18px;
     height: 18px;
-    border: 2px solid #494D64;
+    border: 2px solid #7882A4;
     border-radius: 4px;
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 200);
 }
 QCheckBox::indicator:checked {
     background-color: #61AFEF;
     border-color: #61AFEF;
 }
 QTreeWidget {
-    background-color: #2B2D3A;
+    background-color: rgba(43, 45, 58, 190);
     color: #CDD6F4;
     border: none;
     font-size: 12px;
-    alternate-background-color: #303347;
+    alternate-background-color: rgba(48, 51, 71, 190);
 }
 QTreeWidget::item {
     padding: 4px;
@@ -465,10 +473,10 @@ QTreeWidget::item:selected {
     color: #000000;
 }
 QTreeWidget::item:hover {
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 180);
 }
 QHeaderView::section {
-    background-color: #363848;
+    background-color: rgba(54, 56, 72, 210);
     color: #CDD6F4;
     padding: 6px;
     border: none;
@@ -480,12 +488,12 @@ QScrollArea {
     border: none;
 }
 QScrollBar:vertical {
-    background-color: #2B2D3A;
+    background-color: rgba(43, 45, 58, 150);
     width: 10px;
     border-radius: 5px;
 }
 QScrollBar::handle:vertical {
-    background-color: #494D64;
+    background-color: rgba(73, 77, 100, 200);
     border-radius: 5px;
     min-height: 30px;
 }
@@ -496,12 +504,12 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
     height: 0px;
 }
 QScrollBar:horizontal {
-    background-color: #2B2D3A;
+    background-color: rgba(43, 45, 58, 150);
     height: 10px;
     border-radius: 5px;
 }
 QScrollBar::handle:horizontal {
-    background-color: #494D64;
+    background-color: rgba(73, 77, 100, 200);
     border-radius: 5px;
     min-width: 30px;
 }
@@ -512,8 +520,11 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
     width: 0px;
 }
 QSplitter::handle {
-    background-color: #494D64;
+    background-color: rgba(73, 77, 100, 180);
     width: 2px;
+}
+QDialog {
+    background-color: rgba(36, 39, 58, 240);
 }
 """
 
@@ -606,6 +617,32 @@ class ScoreEntry(QLineEdit):
             result = eval_expression(txt)
             if result != 0 or txt in ("0", "0+0"):
                 self.setText(str(result))
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Фоновый виджет с картинкой
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class _BgWidget(QWidget):
+    """Центральный виджет с фоновой картинкой дартса."""
+    def __init__(self, bg_path, parent=None):
+        super().__init__(parent)
+        self._bg = QPixmap(bg_path) if os.path.isfile(bg_path) else None
+        self.setAttribute(Qt.WA_StyledBackground, True)
+
+    def paintEvent(self, event):
+        p = QPainter(self)
+        # Dark base fill
+        p.fillRect(self.rect(), QColor("#181926"))
+        if self._bg and not self._bg.isNull():
+            scaled = self._bg.scaled(
+                self.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+            x = (self.width() - scaled.width()) // 2
+            y = (self.height() - scaled.height()) // 2
+            p.setOpacity(0.35)
+            p.drawPixmap(x, y, scaled)
+            p.setOpacity(1.0)
+        p.end()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -705,7 +742,8 @@ class App(QMainWindow):
     # ═══════════════════════════════════════════════════════════════════════
 
     def _build(self):
-        central = QWidget()
+        # Central widget with background image
+        central = _BgWidget(BG_PATH)
         self.setCentralWidget(central)
         main_layout = QVBoxLayout(central)
         main_layout.setContentsMargins(10, 10, 10, 10)
@@ -715,8 +753,11 @@ class App(QMainWindow):
         main_layout.addWidget(self.tabs)
 
         self.tab_people = QWidget()
+        self.tab_people.setStyleSheet("background-color: transparent;")
         self.tab_match = QWidget()
+        self.tab_match.setStyleSheet("background-color: transparent;")
         self.tab_stats = QWidget()
+        self.tab_stats.setStyleSheet("background-color: transparent;")
 
         self.tabs.addTab(self.tab_people, "  Участники  ")
         self.tabs.addTab(self.tab_match, "  Матч  ")
@@ -1154,7 +1195,7 @@ class App(QMainWindow):
 
         # Scoreboard
         self.scoreboard = QFrame()
-        self.scoreboard.setStyleSheet("QFrame { background-color: #1E2030; border-radius: 8px; }")
+        self.scoreboard.setStyleSheet("QFrame { background-color: rgba(30, 32, 48, 200); border-radius: 8px; }")
         self.scoreboard_layout = QHBoxLayout(self.scoreboard)
         self.scoreboard_layout.setContentsMargins(12, 6, 12, 6)
         layout.addWidget(self.scoreboard)
@@ -1235,7 +1276,7 @@ class App(QMainWindow):
             title_lbl = QLabel(ROW_TITLES[row_idx])
             title_lbl.setAlignment(Qt.AlignCenter)
             title_lbl.setStyleSheet(
-                "background-color: #FF6B35; color: #000000; font-size: 14px; "
+                "background-color: rgba(255, 107, 53, 210); color: #000000; font-size: 15px; "
                 "font-weight: bold; border-radius: 8px; padding: 6px 12px;")
             self.m_scroll_layout.addWidget(title_lbl)
 
@@ -1264,7 +1305,7 @@ class App(QMainWindow):
     # ─── Создание одного раунда ───────────────────────────────────────────
 
     def _make_round(self, parent_layout, rno, label, code, teams, game_idx=0):
-        chess_colors = ["#3A3D4A", "#454857"]
+        chess_colors = ["rgba(58, 61, 74, 180)", "rgba(69, 72, 87, 180)"]
         bg_color = chess_colors[game_idx % 2]
 
         # Outer: horizontal layout (main game | tiebreak)
@@ -1297,7 +1338,7 @@ class App(QMainWindow):
             # Team header + total
             team_hdr = QHBoxLayout()
             t_name = QLabel(team["name"])
-            t_name.setStyleSheet(f"font-size: 12px; font-weight: bold; color: {team['color']};")
+            t_name.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {team['color']};")
             team_hdr.addWidget(t_name)
 
             sigma = QLabel("Σ")
@@ -1320,8 +1361,8 @@ class App(QMainWindow):
                 pf.setContentsMargins(12, 1, 0, 1)
 
                 plbl = QLabel(pname)
-                plbl.setStyleSheet("font-size: 12px;")
-                plbl.setFixedWidth(90)
+                plbl.setStyleSheet("font-size: 13px;")
+                plbl.setFixedWidth(100)
                 pf.addWidget(plbl)
 
                 re = ScoreEntry(60)
@@ -1428,7 +1469,7 @@ class App(QMainWindow):
         host.setVisible(True)
 
         hdr = QLabel("Доп. игра")
-        hdr.setStyleSheet("font-size: 11px; font-weight: bold; color: #E5C07B;")
+        hdr.setStyleSheet("font-size: 12px; font-weight: bold; color: #E5C07B;")
         layout.addWidget(hdr)
 
         sub = QLabel("(по 1 дротику)")
@@ -1442,7 +1483,7 @@ class App(QMainWindow):
                 continue
 
             t_lbl = QLabel(team["name"])
-            t_lbl.setStyleSheet(f"font-size: 11px; font-weight: bold; color: {team['color']};")
+            t_lbl.setStyleSheet(f"font-size: 13px; font-weight: bold; color: {team['color']};")
             layout.addWidget(t_lbl)
 
             tb_entries[str(ti)] = {}
@@ -1450,8 +1491,8 @@ class App(QMainWindow):
                 pname = self.persons.get(pid, str(pid))
                 pf = QHBoxLayout()
                 plbl = QLabel(pname)
-                plbl.setStyleSheet("font-size: 10px;")
-                plbl.setFixedWidth(70)
+                plbl.setStyleSheet("font-size: 12px;")
+                plbl.setFixedWidth(80)
                 pf.addWidget(plbl)
 
                 ev = ScoreEntry(45)
@@ -1521,7 +1562,7 @@ class App(QMainWindow):
 
     def _build_one_sector_box(self, parent_layout, game_no, teams):
         box = QFrame()
-        box.setStyleSheet("QFrame { background-color: #2B2D3A; border-radius: 10px; }")
+        box.setStyleSheet("QFrame { background-color: rgba(43, 45, 58, 180); border-radius: 10px; }")
         box_layout = QVBoxLayout(box)
         box_layout.setContentsMargins(16, 10, 16, 10)
 
@@ -1552,12 +1593,12 @@ class App(QMainWindow):
         for team in teams:
             ti = team["idx"]
             tf = QFrame()
-            tf.setStyleSheet("QFrame { background-color: #363848; border-radius: 8px; }")
+            tf.setStyleSheet("QFrame { background-color: rgba(54, 56, 72, 180); border-radius: 8px; }")
             tf_layout = QVBoxLayout(tf)
             tf_layout.setContentsMargins(10, 8, 10, 8)
 
             t_lbl = QLabel(team["name"])
-            t_lbl.setStyleSheet(f"font-size: 13px; font-weight: bold; color: {team['color']};")
+            t_lbl.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {team['color']};")
             tf_layout.addWidget(t_lbl)
 
             entries[ti] = {}
@@ -1565,8 +1606,8 @@ class App(QMainWindow):
                 pname = self.persons.get(pid, str(pid))
                 pf = QHBoxLayout()
                 plbl = QLabel(pname)
-                plbl.setStyleSheet("font-size: 12px;")
-                plbl.setFixedWidth(80)
+                plbl.setStyleSheet("font-size: 13px;")
+                plbl.setFixedWidth(90)
                 pf.addWidget(plbl)
                 ev = ScoreEntry(50)
                 ev.setFixedHeight(26)
@@ -1938,7 +1979,7 @@ class App(QMainWindow):
             tf = QVBoxLayout()
             t_name = QLabel(team["name"])
             t_name.setAlignment(Qt.AlignCenter)
-            t_name.setStyleSheet(f"font-size: 12px; color: {team['color']};")
+            t_name.setStyleSheet(f"font-size: 15px; font-weight: bold; color: {team['color']};")
             tf.addWidget(t_name)
 
             t_score = QLabel(str(w))
@@ -2190,7 +2231,7 @@ class App(QMainWindow):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         content = QWidget()
-        content.setStyleSheet("background-color: #24273A;")
+        content.setStyleSheet("background-color: rgba(36, 39, 58, 230);")
         cl = QVBoxLayout(content)
         cl.setContentsMargins(12, 12, 12, 12)
 
@@ -2212,7 +2253,7 @@ class App(QMainWindow):
 
         for rnd in p.get("rounds", []):
             rf = QFrame()
-            rf.setStyleSheet("QFrame { background-color: #2B2D3A; border-radius: 8px; }")
+            rf.setStyleSheet("QFrame { background-color: rgba(43, 45, 58, 200); border-radius: 8px; }")
             rf_layout = QVBoxLayout(rf)
             rf_layout.setContentsMargins(10, 6, 10, 6)
 
@@ -2225,7 +2266,7 @@ class App(QMainWindow):
                 team = team_map.get(ti_str, {})
                 total = rnd.get("totals", {}).get(int(ti_str), 0)
                 t_lbl = QLabel(f"{team.get('name', '?')} — Σ {total}")
-                t_lbl.setStyleSheet(f"font-size: 12px; font-weight: bold; color: {team.get('color', '#CDD6F4')};")
+                t_lbl.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {team.get('color', '#CDD6F4')};")
                 rf_layout.addWidget(t_lbl)
 
                 for pid_s, val in smap.items():
@@ -2268,7 +2309,7 @@ class App(QMainWindow):
                 if sd is None:
                     continue
                 sf = QFrame()
-                sf.setStyleSheet("QFrame { background-color: #2B2D3A; border-radius: 8px; }")
+                sf.setStyleSheet("QFrame { background-color: rgba(43, 45, 58, 200); border-radius: 8px; }")
                 sf_layout = QVBoxLayout(sf)
                 sf_layout.setContentsMargins(10, 6, 10, 6)
 
